@@ -1,0 +1,4 @@
+/docker_env/mysql/data/
+/docker_env/mysql/logs/
+/docker_env/mongo/data/
+/docker_env/mongo/log/
