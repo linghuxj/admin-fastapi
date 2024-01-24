@@ -16,11 +16,11 @@ class LoginManage:
     """
 
     @LoginValidation
-    async def password_login(self, data: LoginForm, user: models.VadminUser, **kwargs) -> LoginResult:
+    async def password_login(self, data: LoginForm, user: models.User, **kwargs) -> LoginResult:
         """
         验证用户密码
         """
-        result = models.VadminUser.verify_password(data.password, user.password)
+        result = models.User.verify_password(data.password, user.password)
         if result:
             return LoginResult(status=True, msg="验证成功")
         return LoginResult(status=False, msg="手机号或密码错误")

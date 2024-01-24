@@ -56,7 +56,7 @@ export enum ComponentNameEnum {
   TREE_SELECT = 'TreeSelect',
   UPLOAD = 'Upload',
   JSON_EDITOR = 'JsonEditor',
-  Text = 'Text'
+  ICON_PICKER = 'IconPicker'
 }
 
 type CamelCaseComponentName = keyof typeof ComponentNameEnum extends infer K
@@ -596,11 +596,6 @@ export interface FormSchema {
   label?: string
 
   /**
-   * 提示
-   */
-  labelMessage?: string
-
-  /**
    * col组件属性
    */
   colProps?: ColProps
@@ -660,9 +655,6 @@ export interface FormSchema {
    * @returns 远程加载下拉项
    */
   optionApi?: any
-
-  // 是否显示，隐藏后还会在formModel中显示，可以获取到该字段的值
-  ifshow?: (formModel: any) => boolean
 }
 
 export interface FormProps extends Partial<ElFormProps> {

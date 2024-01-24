@@ -1,12 +1,8 @@
-import axios from 'axios'
-import {
-  defaultError,
-  defaultRequestInterceptors,
-  defaultResponseError,
-  defaultResponseInterceptors
-} from './config'
+import axios, { AxiosError } from 'axios'
+import { defaultRequestInterceptors, defaultResponseInterceptors } from './config'
 
 import { AxiosInstance, InternalAxiosRequestConfig, RequestConfig, AxiosResponse } from './types'
+import { ElMessage } from 'element-plus'
 import { REQUEST_TIMEOUT } from '@/constants'
 
 export const PATH_URL = import.meta.env.VITE_API_BASE_PATH
@@ -14,9 +10,8 @@ export const PATH_URL = import.meta.env.VITE_API_BASE_PATH
 const abortControllerMap: Map<string, AbortController> = new Map()
 
 const axiosInstance: AxiosInstance = axios.create({
-  timeout: REQUEST_TIMEOUT, // 请求超时时间
-  baseURL: PATH_URL, // 请求基础路径
-  headers: {} // 请求头信息
+  timeout: REQUEST_TIMEOUT,
+  baseURL: PATH_URL
 })
 
 axiosInstance.interceptors.request.use((res: InternalAxiosRequestConfig) => {
@@ -27,15 +22,22 @@ axiosInstance.interceptors.request.use((res: InternalAxiosRequestConfig) => {
   return res
 })
 
-axiosInstance.interceptors.response.use((res: AxiosResponse) => {
-  const url = res.config.url || ''
-  abortControllerMap.delete(url)
-  // 这里不能做任何处理，否则后面的 interceptors 拿不到完整的上下文了
-  return res
-})
+axiosInstance.interceptors.response.use(
+  (res: AxiosResponse) => {
+    const url = res.config.url || ''
+    abortControllerMap.delete(url)
+    // 这里不能做任何处理，否则后面的 interceptors 拿不到完整的上下文了
+    return res
+  },
+  (error: AxiosError) => {
+    console.log('err： ' + error) // for debug
+    ElMessage.error(error.message)
+    return Promise.reject(error)
+  }
+)
 
-axiosInstance.interceptors.request.use(defaultRequestInterceptors, defaultError)
-axiosInstance.interceptors.response.use(defaultResponseInterceptors, defaultResponseError)
+axiosInstance.interceptors.request.use(defaultRequestInterceptors)
+axiosInstance.interceptors.response.use(defaultResponseInterceptors)
 
 const service = {
   request: (config: RequestConfig) => {

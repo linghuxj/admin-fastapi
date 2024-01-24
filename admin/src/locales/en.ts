@@ -44,14 +44,13 @@ export default {
     refresh: 'Refresh',
     fullscreen: 'Fullscreen',
     size: 'Size',
-    density: 'Density',
     columnSetting: 'Column setting',
     lengthRange: 'The length should be between {min} and {max}',
     notSpace: 'Spaces are not allowed',
     notSpecialCharacters: 'Special characters are not allowed',
     isEqual: 'The two are not equal',
-    selectAll: 'Select all',
-    SerialNumberColumn: 'Index column'
+    // 列设置
+    setting: 'Setting'
   },
   lock: {
     lockScreen: 'Lock screen',
@@ -111,27 +110,18 @@ export default {
     welcome: 'Welcome to the system',
     message: 'Backstage management system',
     username: 'Username',
-    telephone: 'Telephone',
     password: 'Password',
     register: 'Register',
     checkPassword: 'Confirm password',
     login: 'Sign in',
-    passwordLogin: 'Password login',
-    smsLogin: 'SMS code login',
     otherLogin: 'Sign in with',
     remember: 'Remember me',
     hasUser: 'Existing account? Go to login',
     forgetPassword: 'Forget password',
     usernamePlaceholder: 'Please input username',
-    telephonePlaceholder: 'Please input telephone',
     passwordPlaceholder: 'Please input password',
     code: 'Verification code',
-    getCode: 'Get code',
-    codePlaceholder: 'Please input verification code',
-    SMSCode: 'sms code',
-    getSMSCode: 'get sms code',
-    SMSCodePlaceholder: 'Please input sms code',
-    SMSCodeRetry: 'S retry'
+    codePlaceholder: 'Please input verification code'
   },
   router: {
     login: 'Login',
@@ -187,7 +177,14 @@ export default {
     function: 'Function',
     multipleTabs: 'Multiple tabs',
     details: 'Details',
-    iconPicker: 'Icon picker'
+    iconPicker: 'Icon picker',
+    request: 'Request',
+    waterfall: 'Waterfall',
+    imageCropping: 'Image cropping',
+    videoPlayer: 'Video player',
+    // 表格视频预览
+    tableVideoPreview: 'Table video preview',
+    cardTable: 'Card table'
   },
   permission: {
     hasPermission: 'Please set the operation permission value'
@@ -333,7 +330,8 @@ export default {
     lazyLoad: 'Lazy load',
     upload: 'Upload',
     // 用户头像
-    userAvatar: 'User avatar'
+    userAvatar: 'User avatar',
+    iconPicker: 'Icon picker'
   },
   guideDemo: {
     guide: 'Guide',
@@ -455,14 +453,15 @@ export default {
     changeTitle: 'Change title',
     header: 'Header',
     selectAllNone: 'Select all / none',
-    selectAll: 'Select all',
     delOrAddAction: 'Delete or add action',
     showOrHiddenStripe: 'Show or hidden stripe',
     showOrHiddenBorder: 'Show or hidden border',
     fixedHeaderOrAuto: 'Fixed header or auto',
     getSelections: 'Get selections',
     preview: 'Preview',
-    showOrHiddenSortable: 'Show or hidden sortable'
+    showOrHiddenSortable: 'Show or hidden sortable',
+    videoPreview: 'Video preview',
+    cardTable: 'Card table'
   },
   richText: {
     richText: 'Rich text',

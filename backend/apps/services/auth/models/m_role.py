@@ -2,7 +2,7 @@
 
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
-from apps.admin.auth.schemas import Menu
+from .m_menu import Menu
 from .m_dept import Dept
 from .m_m2m import auth_role_menus, auth_role_depts
 from db.db_base import BaseModel

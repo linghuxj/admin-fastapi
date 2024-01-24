@@ -6,8 +6,7 @@ import {
   ElRow,
   ElCol,
   FormRules,
-  ComponentSize,
-  ElTooltip
+  ComponentSize
   // FormItemProp
 } from 'element-plus'
 import { componentMap } from './helper/componentMap'
@@ -35,7 +34,6 @@ import {
   RadioGroupComponentProps,
   CheckboxGroupComponentProps
 } from './types'
-import { Icon } from '@/components/Icon'
 
 const { renderSelectOptions } = useRenderSelect()
 const { renderRadioOptions } = useRenderRadio()
@@ -95,9 +93,6 @@ export default defineComponent({
     // element form 实例
     const elFormRef = ref<ComponentRef<typeof ElForm>>()
 
-    // useForm传入的props
-    const outsideProps = ref<FormProps>({})
-
     const mergeProps = ref<FormProps>({})
 
     const getProps = computed(() => {
@@ -115,31 +110,7 @@ export default defineComponent({
     // 表单数据
     const formModel = ref<Recordable>(props.model)
 
-    // 加载表单 optionApi
-    const renderFormItemOptions = () => {
-      const { schema = [] } = unref(getProps)
-
-      schema
-        .filter((v) => {
-          if (v.remove === true) {
-            return false
-          } else if (v.hidden === true) {
-            return false
-          } else if (v.optionApi) {
-            return true
-          }
-          return false
-        })
-        .forEach((item) => {
-          if (item.optionApi) {
-            // 内部自动调用接口，不影响其它渲染
-            getOptions(item.optionApi, item)
-          }
-        })
-    }
-
     onMounted(() => {
-      renderFormItemOptions()
       emit('register', unref(elFormRef)?.$parent, unref(elFormRef))
     })
 
@@ -148,15 +119,8 @@ export default defineComponent({
       formModel.value = Object.assign(unref(formModel), data)
     }
 
-    // 对表单项赋值
-    const setValue = (key: string, value: any) => {
-      formModel.value[key] = value
-    }
-
     const setProps = (props: FormProps = {}) => {
       mergeProps.value = Object.assign(unref(mergeProps), props)
-      // @ts-ignore
-      outsideProps.value = props
     }
 
     const delSchema = (field: string) => {
@@ -228,7 +192,6 @@ export default defineComponent({
 
     expose({
       setValues,
-      setValue,
       formModel,
       setProps,
       delSchema,
@@ -263,20 +226,11 @@ export default defineComponent({
 
     // 是否要渲染el-col
     const renderFormItemWrap = () => {
-      // hidden 属性表示隐藏，不做渲染
+      // hidden属性表示隐藏，不做渲染
       const { schema = [], isCol } = unref(getProps)
 
       return schema
-        .filter((v) => {
-          if (v.remove === true) {
-            return false
-          } else if (v.hidden === true) {
-            return false
-          } else if (v.ifshow) {
-            return v.ifshow(formModel.value)
-          }
-          return true
-        })
+        .filter((v) => !v.remove && !v.hidden)
         .map((item) => {
           // 如果是 Divider 组件，需要自己占用一行
           const isDivider = item.component === 'Divider'
@@ -294,6 +248,11 @@ export default defineComponent({
 
     // 渲染formItem
     const renderFormItem = (item: FormSchema) => {
+      // 如果有optionApi，优先使用optionApi
+      if (item.optionApi) {
+        // 内部自动调用接口，不影响其它渲染
+        getOptions(item.optionApi, item)
+      }
       const formItemSlots: Recordable = {
         default: () => {
           if (item?.formItemProps?.slots?.default) {
@@ -364,13 +323,31 @@ export default defineComponent({
                 }
               })
 
-              return (
+              return item.component === ComponentNameEnum.UPLOAD ? (
+                <Com
+                  vModel:file-list={itemVal.value}
+                  ref={(el: any) => setComponentRefMap(el, item.field)}
+                  {...(autoSetPlaceholder && setTextPlaceholder(item))}
+                  {...setComponentProps(item)}
+                  style={
+                    item.componentProps?.style || {
+                      width: '100%'
+                    }
+                  }
+                >
+                  {{ ...slotsMap }}
+                </Com>
+              ) : (
                 <Com
                   vModel={itemVal.value}
                   ref={(el: any) => setComponentRefMap(el, item.field)}
                   {...(autoSetPlaceholder && setTextPlaceholder(item))}
                   {...setComponentProps(item)}
-                  style={item.componentProps?.style || {}}
+                  style={
+                    item.componentProps?.style || {
+                      width: '100%'
+                    }
+                  }
                 >
                   {{ ...slotsMap }}
                 </Com>
@@ -379,30 +356,6 @@ export default defineComponent({
 
             return <>{Comp()}</>
           }
-        }
-      }
-
-      // 如果有 labelMessage，自动使用插槽渲染
-      if (item?.labelMessage) {
-        formItemSlots.label = () => {
-          return (
-            <>
-              <span>{item.label}</span>
-              <ElTooltip placement="top" raw-content>
-                {{
-                  content: () => <span v-html={item.labelMessage}></span>,
-                  default: () => (
-                    <Icon
-                      icon="ep:warning"
-                      size={16}
-                      color="var(--el-color-primary)"
-                      class="ml-2px relative top-1px"
-                    ></Icon>
-                  )
-                }}
-              </ElTooltip>
-            </>
-          )
         }
       }
       if (item?.formItemProps?.slots?.label) {
@@ -415,9 +368,9 @@ export default defineComponent({
           return (item?.formItemProps?.slots as any)?.error(...args)
         }
       }
-
       return (
         <ElFormItem
+          v-show={!item.hidden}
           ref={(el: any) => setFormItemRefMap(el, item.field)}
           {...(item.formItemProps || {})}
           prop={item.field}
@@ -447,6 +400,10 @@ export default defineComponent({
         {...getFormBindValue()}
         model={unref(getProps).isCustom ? unref(getProps).model : formModel}
         class={prefixCls}
+        // @ts-ignore
+        onSubmit={(e: Event) => {
+          e.preventDefault()
+        }}
       >
         {{
           // 如果需要自定义，就什么都不渲染，而是提供默认插槽
@@ -465,5 +422,9 @@ export default defineComponent({
 .@{elNamespace}-form.@{namespace}-form .@{elNamespace}-row {
   margin-right: 0 !important;
   margin-left: 0 !important;
+}
+
+.@{elNamespace}-form--inline .@{elNamespace}-input {
+  width: 245px;
 }
 </style>

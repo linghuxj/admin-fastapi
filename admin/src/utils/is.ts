@@ -1,4 +1,4 @@
-// copy to vben-Admin
+// copy to vben-admin
 
 const toString = Object.prototype.toString
 

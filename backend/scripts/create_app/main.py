@@ -7,7 +7,7 @@ from application.settings import BASE_DIR
 
 
 class CreateApp:
-    APPS_ROOT = os.path.join(BASE_DIR, "apps")
+    APPS_ROOT = os.path.join(BASE_DIR, "apps/service")
     SCRIPT_DIR = os.path.join(BASE_DIR, 'scripts', 'create_app')
 
     def __init__(self, path: str):

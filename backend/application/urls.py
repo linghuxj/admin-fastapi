@@ -1,12 +1,12 @@
 # 路由文件
 
-from apps.admin.auth.utils.login import app as auth_app
+from apps.admin.auth.login_views import app as auth_app
 from apps.admin.auth.admin_views import app as admin_auth_app
 from apps.admin.system.admin_views import app as admin_system_app
 from apps.admin.record.admin_views import app as admin_record_app
 from apps.admin.workplace.admin_views import app as admin_workplace_app
 from apps.admin.analysis.admin_views import app as admin_analysis_app
-from apps.services.help import app as admin_help_app
+from apps.admin.help.admin_views import app as admin_help_app
 from apps.admin.resource.admin_views import app as admin_resource_app
 
 # 引入应用中的路由

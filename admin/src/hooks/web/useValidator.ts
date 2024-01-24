@@ -1,10 +1,7 @@
 import { useI18n } from '@/hooks/web/useI18n'
-import { isEmpty, isNullOrUnDef } from '@/utils/is'
 import { FormItemRule } from 'element-plus'
 
 const { t } = useI18n()
-
-type Callback = (error?: string | Error | undefined) => void
 
 interface LengthRange {
   min: number
@@ -54,49 +51,10 @@ export const useValidator = () => {
     }
   }
 
-  const isEmail = (_rule: any, val: any, callback: Callback) => {
-    if (isEmpty(val) || isNullOrUnDef(val)) {
-      callback()
-    }
-    // 判断是否为邮箱地址
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
-      callback()
-    } else {
-      callback(new Error('请填写正确的邮箱地址'))
-    }
-  }
-
-  const isTelephone = (_rule: any, val: any, callback: Callback) => {
-    if (isEmpty(val) || isNullOrUnDef(val)) {
-      callback()
-    }
-    // 判断是否为正确手机号
-    if (/^1[3-9]\d{9}$/.test(val)) {
-      callback()
-    } else {
-      callback(new Error('请填写正确的手机号'))
-    }
-  }
-
-  const isAmount = (_rule: any, val: any, callback: Callback) => {
-    if (isEmpty(val) || isNullOrUnDef(val)) {
-      callback()
-    }
-    // 判断是否为正确金额
-    if (/^\d+(\.\d{1,2})?$/.test(val)) {
-      callback()
-    } else {
-      callback(new Error('请填写正确的金额格式'))
-    }
-  }
-
   return {
     required,
     lengthRange,
     notSpace,
-    notSpecialCharacters,
-    isEmail,
-    isTelephone,
-    isAmount
+    notSpecialCharacters
   }
 }

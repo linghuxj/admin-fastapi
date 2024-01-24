@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import { store } from '@/store'
+import { store } from '../index'
 import { setCssVar, humpToUnderline } from '@/utils'
-import { mix } from '@/utils/color'
+import { colorIsDark, hexToRGB, lighten, mix } from '@/utils/color'
 import { ElMessage, ComponentSize } from 'element-plus'
-import { useStorage } from '@/hooks/web/useStorage'
-
-const { getStorage, setStorage } = useStorage()
+import { useCssVar } from '@vueuse/core'
+import { unref } from 'vue'
+import { useDark } from '@vueuse/core'
 
 interface AppState {
   breadcrumb: boolean
@@ -33,13 +33,6 @@ interface AppState {
   footer: boolean
   theme: ThemeTypes
   fixedMenu: boolean
-
-  userInfo: string
-  token: string
-  refreshToken: string
-  logoImage: string
-  footerContent: string
-  icpNumber: string
 }
 
 export const useAppStore = defineStore('app', {
@@ -63,14 +56,14 @@ export const useAppStore = defineStore('app', {
       fixedHeader: true, // 固定toolheader
       footer: true, // 显示页脚
       greyMode: false, // 是否开始灰色模式，用于特殊悼念日
-      dynamicRouter: getStorage('dynamicRouter'), // 是否动态路由
-      serverDynamicRouter: getStorage('serverDynamicRouter'), // 是否服务端渲染动态路由
-      fixedMenu: getStorage('fixedMenu'), // 是否固定菜单
+      dynamicRouter: true, // 是否动态路由
+      serverDynamicRouter: true, // 是否服务端渲染动态路由
+      fixedMenu: false, // 是否固定菜单
 
-      layout: getStorage('layout') || 'classic', // layout布局
-      isDark: getStorage('isDark'), // 是否是暗黑模式
-      currentSize: getStorage('default') || 'default', // 组件尺寸
-      theme: getStorage('theme') || {
+      layout: 'classic', // layout布局
+      isDark: false, // 是否是暗黑模式
+      currentSize: 'default', // 组件尺寸
+      theme: {
         // 主题色
         elColorPrimary: '#409eff',
         // 左侧菜单边框颜色
@@ -99,15 +92,7 @@ export const useAppStore = defineStore('app', {
         topHeaderHoverColor: '#f6f6f6',
         // 头部边框颜色
         topToolBorderColor: '#eee'
-      },
-
-      // 自定义
-      userInfo: 'userInfo', // 用户信息
-      token: 'Token', // token
-      refreshToken: 'RefreshToken', // 刷新token
-      logoImage: '', // logo图片
-      footerContent: '', // 页脚内容
-      icpNumber: '' // 备案号
+      }
     }
   },
   getters: {
@@ -185,24 +170,6 @@ export const useAppStore = defineStore('app', {
     },
     getFooter(): boolean {
       return this.footer
-    },
-    getUserInfo(): string {
-      return this.userInfo
-    },
-    getToken(): string {
-      return this.token
-    },
-    getRefreshToken(): string {
-      return this.refreshToken
-    },
-    getLogoImage(): string {
-      return this.logoImage
-    },
-    getFooterContent(): string {
-      return this.footerContent
-    },
-    getIcpNumber(): string {
-      return this.icpNumber
     }
   },
   actions: {
@@ -246,15 +213,12 @@ export const useAppStore = defineStore('app', {
       this.greyMode = greyMode
     },
     setDynamicRouter(dynamicRouter: boolean) {
-      setStorage('dynamicRouter', dynamicRouter)
       this.dynamicRouter = dynamicRouter
     },
     setServerDynamicRouter(serverDynamicRouter: boolean) {
-      setStorage('serverDynamicRouter', serverDynamicRouter)
       this.serverDynamicRouter = serverDynamicRouter
     },
     setFixedMenu(fixedMenu: boolean) {
-      setStorage('fixedMenu', fixedMenu)
       this.fixedMenu = fixedMenu
     },
     setPageLoading(pageLoading: boolean) {
@@ -266,7 +230,6 @@ export const useAppStore = defineStore('app', {
         return
       }
       this.layout = layout
-      setStorage('layout', layout)
     },
     setTitle(title: string) {
       this.title = title
@@ -280,7 +243,6 @@ export const useAppStore = defineStore('app', {
         document.documentElement.classList.add('light')
         document.documentElement.classList.remove('dark')
       }
-      setStorage('isDark', isDark)
       this.setPrimaryLight()
     },
     setCurrentSize(currentSize: ComponentSize) {
@@ -291,7 +253,6 @@ export const useAppStore = defineStore('app', {
     },
     setTheme(theme: ThemeTypes) {
       this.theme = Object.assign(this.theme, theme)
-      setStorage('theme', this.theme)
     },
     setCssVarTheme() {
       for (const key in this.theme) {
@@ -313,16 +274,63 @@ export const useAppStore = defineStore('app', {
         setCssVar(`--el-color-primary-dark-2`, mix(color, elColorPrimary, 0.2))
       }
     },
-    setLogoImage(logoImage: string) {
-      this.logoImage = logoImage
+    setMenuTheme(color: string) {
+      const primaryColor = useCssVar('--el-color-primary', document.documentElement)
+      const isDarkColor = colorIsDark(color)
+      const theme: Recordable = {
+        // 左侧菜单边框颜色
+        leftMenuBorderColor: isDarkColor ? 'inherit' : '#eee',
+        // 左侧菜单背景颜色
+        leftMenuBgColor: color,
+        // 左侧菜单浅色背景颜色
+        leftMenuBgLightColor: isDarkColor ? lighten(color!, 6) : color,
+        // 左侧菜单选中背景颜色
+        leftMenuBgActiveColor: isDarkColor
+          ? 'var(--el-color-primary)'
+          : hexToRGB(unref(primaryColor), 0.1),
+        // 左侧菜单收起选中背景颜色
+        leftMenuCollapseBgActiveColor: isDarkColor
+          ? 'var(--el-color-primary)'
+          : hexToRGB(unref(primaryColor), 0.1),
+        // 左侧菜单字体颜色
+        leftMenuTextColor: isDarkColor ? '#bfcbd9' : '#333',
+        // 左侧菜单选中字体颜色
+        leftMenuTextActiveColor: isDarkColor ? '#fff' : 'var(--el-color-primary)',
+        // logo字体颜色
+        logoTitleTextColor: isDarkColor ? '#fff' : 'inherit',
+        // logo边框颜色
+        logoBorderColor: isDarkColor ? color : '#eee'
+      }
+      this.setTheme(theme)
+      this.setCssVarTheme()
     },
-    setFooterContent(footerContent: string) {
-      this.footerContent = footerContent
+    setHeaderTheme(color: string) {
+      const isDarkColor = colorIsDark(color)
+      const textColor = isDarkColor ? '#fff' : 'inherit'
+      const textHoverColor = isDarkColor ? lighten(color!, 6) : '#f6f6f6'
+      const topToolBorderColor = isDarkColor ? color : '#eee'
+      setCssVar('--top-header-bg-color', color)
+      setCssVar('--top-header-text-color', textColor)
+      setCssVar('--top-header-hover-color', textHoverColor)
+      this.setTheme({
+        topHeaderBgColor: color,
+        topHeaderTextColor: textColor,
+        topHeaderHoverColor: textHoverColor,
+        topToolBorderColor
+      })
+      if (this.getLayout === 'top') {
+        this.setMenuTheme(color)
+      }
     },
-    setIcpNumber(icpNumber: string) {
-      this.icpNumber = icpNumber
+    initTheme() {
+      const isDark = useDark({
+        valueDark: 'dark',
+        valueLight: 'light'
+      })
+      isDark.value = this.getIsDark
     }
-  }
+  },
+  persist: true
 })
 
 export const useAppStoreWithOut = () => {

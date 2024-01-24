@@ -1,3 +1,5 @@
+import 'vue/jsx'
+
 // 引入windi css
 import '@/plugins/unocss'
 
@@ -5,17 +7,16 @@ import '@/plugins/unocss'
 import '@/plugins/svgIcon'
 
 // 初始化多语言
-import {setupI18n} from '@/plugins/vueI18n'
+import { setupI18n } from '@/plugins/vueI18n'
 
 // 引入状态管理
-import {setupStore} from '@/store'
+import { setupStore } from '@/store'
 
 // 全局组件
-// @ts-ignore
-import {setupGlobCom} from '@/components'
+import { setupGlobCom } from '@/components'
 
 // 引入element-plus
-import {setupElementPlus} from '@/plugins/elementPlus'
+import { setupElementPlus } from '@/plugins/elementPlus'
 
 // 引入全局样式
 import '@/styles/index.less'
@@ -24,11 +25,13 @@ import '@/styles/index.less'
 import '@/plugins/animate.css'
 
 // 路由
-import {setupRouter} from './router'
+import { setupRouter } from './router'
 
-import {createApp} from 'vue'
+// 权限
+import { setupPermission } from './directives'
 
-// @ts-ignore
+import { createApp } from 'vue'
+
 import App from './App.vue'
 
 import './permission'
@@ -46,6 +49,8 @@ const setupAll = async () => {
   setupElementPlus(app)
 
   setupRouter(app)
+
+  setupPermission(app)
 
   app.mount('#app')
 }

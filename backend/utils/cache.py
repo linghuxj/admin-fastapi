@@ -7,7 +7,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload
 from core.logger import logger  # 注意：报错就在这里，如果只写 core.logger 会写入日志报错，很难排查
 from core.database import db_getter
-from apps.admin.system.models import VadminSystemSettingsTab
+from apps.services.system.models import SystemSettingsTab
 import json
 from redis.asyncio.client import Redis
 from core.exception import CustomException
@@ -26,7 +26,7 @@ class Cache:
         """
         async_session = db_getter()
         session = await async_session.__anext__()
-        model = VadminSystemSettingsTab
+        model = SystemSettingsTab
         options = [joinedload(model.settings)]
         sql = select(model).where(
             model.is_delete == false(),
@@ -38,7 +38,7 @@ class Cache:
         return self.__generate_values(datas)
 
     @classmethod
-    def __generate_values(cls, datas: List[VadminSystemSettingsTab]):
+    def __generate_values(cls, datas: List[SystemSettingsTab]):
         """
         生成字典值
         """

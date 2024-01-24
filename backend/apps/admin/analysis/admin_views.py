@@ -1,9 +1,9 @@
 # API接口定义
 
 from fastapi import APIRouter, Depends
-from apps.admin.auth.utils.current import AllUserAuth
+from apps.services.auth.utils.current import AllUserAuth
+from apps.services.auth.utils.validation.auth import Auth
 from utils.response import SuccessResponse
-from apps.admin.auth.utils.validation.auth import Auth
 import random
 
 app = APIRouter()

@@ -1,15 +1,16 @@
 # 数据初始化
 
+import os
+import subprocess
+
 from enum import Enum
 from sqlalchemy import insert
 from core.database import db_getter
 from utils.excel.excel_manage import ExcelManage
 from application.settings import BASE_DIR, VERSION
-import os
-from apps.admin.auth import models as auth_models
-from apps.admin.system import models as system_models
+from apps.services.auth import models as auth_models
+from apps.services.system import models as system_models
 from apps.services.help import models as help_models
-import subprocess
 
 
 class Environment(str, Enum):
@@ -80,6 +81,8 @@ class InitializeData:
         async_session = db_getter()
         db = await async_session.__anext__()
         datas = self.datas.get(table_name)
+        print(f"开始生成 {table_name} 表数据")
+        print(f"共 {len(datas)} 条数据")
         await db.execute(insert(model), datas)
         await db.flush()
         await db.commit()
@@ -89,69 +92,69 @@ class InitializeData:
         """
         生成菜单数据
         """
-        await self.__generate_data("vadmin_auth_menu", auth_models.VadminMenu)
+        await self.__generate_data("auth_menu", auth_models.Menu)
 
     async def generate_role(self):
         """
         生成角色
         """
-        await self.__generate_data("vadmin_auth_role", auth_models.VadminRole)
+        await self.__generate_data("auth_role", auth_models.Role)
 
     async def generate_user(self):
         """
         生成用户
         """
-        await self.__generate_data("vadmin_auth_user", auth_models.VadminUser)
+        await self.__generate_data("auth_user", auth_models.User)
 
     async def generate_user_role(self):
         """
         生成用户
         """
-        await self.__generate_data("vadmin_auth_user_roles", auth_models.vadmin_auth_user_roles)
+        await self.__generate_data("auth_user_roles", auth_models.auth_user_roles)
 
     async def generate_system_tab(self):
         """
         生成系统配置分类数据
         """
-        await self.__generate_data("vadmin_system_settings_tab", system_models.VadminSystemSettingsTab)
+        await self.__generate_data("system_settings_tab", system_models.SystemSettingsTab)
 
     async def generate_system_config(self):
         """
         生成系统配置数据
         """
-        await self.__generate_data("vadmin_system_settings", system_models.VadminSystemSettings)
+        await self.__generate_data("system_settings", system_models.SystemSettings)
 
     async def generate_dict_type(self):
         """
         生成字典类型数据
         """
-        await self.__generate_data("vadmin_system_dict_type", system_models.VadminDictType)
+        await self.__generate_data("system_dict_type", system_models.DictType)
 
     async def generate_dict_details(self):
         """
         生成字典详情数据
         """
-        await self.__generate_data("vadmin_system_dict_details", system_models.VadminDictDetails)
+        await self.__generate_data("system_dict_details", system_models.DictDetails)
 
     async def generate_help_issue_category(self):
         """
         生成常见问题类别数据
         """
-        await self.__generate_data("vadmin_help_issue_category", help_models.IssueCategory)
+        await self.__generate_data("help_issue_category", help_models.IssueCategory)
 
     async def generate_help_issue(self):
         """
         生成常见问题详情数据
         """
-        await self.__generate_data("vadmin_help_issue", help_models.Issue)
+        await self.__generate_data("help_issue", help_models.Issue)
 
     async def run(self, env: Environment = Environment.pro):
         """
         执行初始化工作
         """
         self.migrate_model(env)
-        await self.generate_menu()
         await self.generate_role()
+        await self.generate_menu()
         await self.generate_user()
         await self.generate_user_role()
         await self.generate_system_tab()

@@ -17,8 +17,6 @@ const layout = computed(() => appStore.getLayout)
 
 const collapse = computed(() => appStore.getCollapse)
 
-const logoImage = computed(() => appStore.getLogoImage)
-
 onMounted(() => {
   if (unref(collapse)) show.value = false
 })
@@ -30,13 +28,7 @@ watch(
       show.value = true
       return
     }
-    if (!collapse) {
-      setTimeout(() => {
-        show.value = !collapse
-      }, 400)
-    } else {
-      show.value = !collapse
-    }
+    show.value = !collapse
   }
 )
 
@@ -67,7 +59,7 @@ watch(
       to="/"
     >
       <img
-        :src="logoImage"
+        src="@/assets/imgs/logo.png"
         class="w-[calc(var(--logo-height)-10px)] h-[calc(var(--logo-height)-10px)]"
       />
       <div

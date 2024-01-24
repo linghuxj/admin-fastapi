@@ -1,11 +1,8 @@
 # API接口定义
 
-from fastapi import APIRouter, Depends
-from apps.admin.auth.utils.current import AllUserAuth
-from apps.admin.auth.utils.validation.auth import Auth
+from fastapi import APIRouter
 from utils.response import SuccessResponse
 import datetime
-from apps.admin.record.crud import LoginRecordDal
 
 app = APIRouter()
 

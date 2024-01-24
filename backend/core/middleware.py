@@ -12,8 +12,7 @@ from core.logger import logger
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
 from user_agents import parse
-from application.settings import OPERATION_RECORD_METHOD, MONGO_DB_ENABLE, IGNORE_OPERATION_FUNCTION, \
-from utils.response import ErrorResponse
+from application.settings import OPERATION_RECORD_METHOD, MONGO_DB_ENABLE, IGNORE_OPERATION_FUNCTION
 from apps.services.record.crud import OperationRecordDal
 from core.database import mongo_getter
 

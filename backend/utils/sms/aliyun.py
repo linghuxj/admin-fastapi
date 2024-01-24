@@ -129,7 +129,7 @@ class AliyunSMS(DBGetter):
         SELECT
             config_value 
         FROM
-            `vadmin_system_settings` 
+            `system_settings` 
         WHERE
             config_key IN (
                 'sms_access_key',

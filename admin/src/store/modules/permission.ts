@@ -1,7 +1,11 @@
 import { defineStore } from 'pinia'
-import { constantRouterMap } from '@/router'
-import { generateRoutesByServer, flatMultiLevelRoutes } from '@/utils/routerHelper'
-import { store } from '@/store'
+import { asyncRouterMap, constantRouterMap } from '@/router'
+import {
+  generateRoutesByFrontEnd,
+  generateRoutesByServer,
+  flatMultiLevelRoutes
+} from '@/utils/routerHelper'
+import { store } from '../index'
 import { cloneDeep } from 'lodash-es'
 
 export interface PermissionState {
@@ -33,16 +37,26 @@ export const usePermissionStore = defineStore('permission', {
     }
   },
   actions: {
-    generateRoutes(routers?: AppCustomRouteRecordRaw[] | string[]): Promise<unknown> {
+    generateRoutes(
+      type: 'server' | 'frontEnd' | 'static',
+      routers?: AppCustomRouteRecordRaw[] | string[]
+    ): Promise<unknown> {
       return new Promise<void>((resolve) => {
-        // 根据服务端返回的路由生成路由表
-        const routerMap: AppRouteRecordRaw[] = generateRoutesByServer(
-          routers as AppCustomRouteRecordRaw[]
-        )
-        // 动态路由，404放最后
+        let routerMap: AppRouteRecordRaw[] = []
+        if (type === 'server') {
+          // 模拟后端过滤菜单
+          routerMap = generateRoutesByServer(routers as AppCustomRouteRecordRaw[])
+        } else if (type === 'frontEnd') {
+          // 模拟前端过滤菜单
+          routerMap = generateRoutesByFrontEnd(cloneDeep(asyncRouterMap), routers as string[])
+        } else {
+          // 直接读取静态路由表
+          routerMap = cloneDeep(asyncRouterMap)
+        }
+        // 动态路由，404一定要放到最后面
         this.addRouters = routerMap.concat([
           {
-            path: '/:pathMatch(.*)*',
+            path: '/:path(.*)*',
             redirect: '/404',
             name: '404Page',
             meta: {
@@ -62,6 +76,9 @@ export const usePermissionStore = defineStore('permission', {
     setMenuTabRouters(routers: AppRouteRecordRaw[]): void {
       this.menuTabRouters = routers
     }
+  },
+  persist: {
+    paths: ['routers', 'addRouters', 'menuTabRouters']
   }
 })
 

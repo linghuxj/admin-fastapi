@@ -1,14 +1,11 @@
-export type UserLoginType = {
+export interface UserLoginType {
   username: string
   password: string
-  method: string
-  platform?: string
 }
 
-export type UserType = {
-  id: number
-  telephone: string
-  nickname: string
-  avatar: string
-  name: string
+export interface UserType {
+  username: string
+  password: string
+  role: string
+  roleId: string
 }

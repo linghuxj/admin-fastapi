@@ -10,14 +10,11 @@ const props = defineProps({
   modelValue: propTypes.bool.def(false),
   title: propTypes.string.def('Dialog'),
   fullscreen: propTypes.bool.def(true),
-
-  top: propTypes.string.def('8vh'),
-  height: propTypes.oneOfType([String, Number]).def('500px'),
-  width: propTypes.oneOfType([String, Number]).def('700px')
+  maxHeight: propTypes.oneOfType([String, Number]).def('400px')
 })
 
 const getBindValue = computed(() => {
-  const delArr: string[] = ['fullscreen', 'title', 'height', 'top', 'width']
+  const delArr: string[] = ['fullscreen', 'title', 'maxHeight']
   const attrs = useAttrs()
   const obj = { ...attrs, ...props }
   for (const key in obj) {
@@ -34,7 +31,7 @@ const toggleFull = () => {
   isFullscreen.value = !unref(isFullscreen)
 }
 
-const dialogHeight = ref(isNumber(props.height) ? `${props.height}px` : props.height)
+const dialogHeight = ref(isNumber(props.maxHeight) ? `${props.maxHeight}px` : props.maxHeight)
 
 watch(
   () => isFullscreen.value,
@@ -44,7 +41,7 @@ watch(
       const windowHeight = document.documentElement.offsetHeight
       dialogHeight.value = `${windowHeight - 55 - 60 - (slots.footer ? 63 : 0)}px`
     } else {
-      dialogHeight.value = isNumber(props.height) ? `${props.height}px` : props.height
+      dialogHeight.value = isNumber(props.maxHeight) ? `${props.maxHeight}px` : props.maxHeight
     }
   },
   {
@@ -66,8 +63,7 @@ const dialogStyle = computed(() => {
     destroy-on-close
     lock-scroll
     draggable
-    :top="top"
-    :width="width"
+    top="0"
     :close-on-click-modal="false"
     :show-close="false"
   >
@@ -109,26 +105,30 @@ const dialogStyle = computed(() => {
 </template>
 
 <style lang="less">
-// .@{elNamespace}-overlay-dialog {
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// }
+.@{elNamespace}-overlay-dialog {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .@{elNamespace}-dialog {
-  // margin: 0 !important;
+  margin: 0 !important;
+
   &__header {
+    height: 54px;
+    padding: 0;
     margin-right: 0 !important;
     border-bottom: 1px solid var(--el-border-color);
-    padding: 0;
-    height: 54px;
   }
+
   &__body {
     padding: 15px !important;
   }
+
   &__footer {
     border-top: 1px solid var(--el-border-color);
   }
+
   &__headerbtn {
     top: 0;
   }

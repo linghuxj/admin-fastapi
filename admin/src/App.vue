@@ -1,50 +1,30 @@
 <script setup lang="ts">
-import { useDesign } from '@/hooks/web/useDesign'
 import { computed } from 'vue'
 import { useAppStore } from '@/store/modules/app'
-import { useStorage } from '@/hooks/web/useStorage'
-import { isDark } from '@/utils/is'
 import { ConfigGlobal } from '@/components/ConfigGlobal'
-import { getSystemBaseConfigApi } from '@/api/admin/system/settings'
+import { useDesign } from '@/hooks/web/useDesign'
+import { ElNotification } from 'element-plus'
 
 const { getPrefixCls } = useDesign()
+
 const prefixCls = getPrefixCls('app')
+
 const appStore = useAppStore()
+
 const currentSize = computed(() => appStore.getCurrentSize)
+
 const greyMode = computed(() => appStore.getGreyMode)
-const { getStorage } = useStorage()
 
-// 根据浏览器当前主题设置系统主题色
-const setDefaultTheme = () => {
-  if (getStorage('isDark') !== null) {
-    appStore.setIsDark(getStorage('isDark'))
-    return
-  }
-  const isDarkTheme = isDark()
-  appStore.setIsDark(isDarkTheme)
-}
+appStore.initTheme()
 
-// 设置网站图标
-const addMeta = (name: string, content: string) => {
-  const meta = document.createElement('meta')
-  meta.name = name
-  meta.content = content
-  document.getElementsByTagName('head')[0].appendChild(meta)
-}
-
-const setSystemConfig = async () => {
-  const res = await getSystemBaseConfigApi()
-  if (res) {
-    appStore.setTitle(res.data.web_title || import.meta.env.VITE_APP_TITLE)
-    appStore.setLogoImage(res.data.web_logo || '/media/system/logo.png')
-    appStore.setFooterContent(res.data.web_copyright || 'Copyright ©2020-present Software')
-    appStore.setIcpNumber(res.data.web_icp_number || '')
-    addMeta('description', res.data.web_desc || '通用型后台管理系统')
-  }
-}
-
-setDefaultTheme()
-setSystemConfig()
+ElNotification({
+  title: '提示',
+  type: 'warning',
+  duration: 0,
+  dangerouslyUseHTMLString: true,
+  message:
+    '<div><p><strong>遇事不决，请先查阅常见问题，说不定你能找到相关解答</strong></p><p><a href="https://element-plus-admin-doc.cn/guide/fqa.html" target="_blank">链接地址</a></p></div>'
+})
 </script>
 
 <template>
@@ -57,7 +37,7 @@ setSystemConfig()
 @prefix-cls: ~'@{namespace}-app';
 
 .size {
-  width: 100% !important;
+  width: 100%;
   height: 100%;
 }
 
@@ -75,15 +55,5 @@ body {
 
 .@{prefix-cls}-grey-mode {
   filter: grayscale(100%);
-}
-
-ol {
-  display: block;
-  list-style-type: decimal;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0;
-  margin-inline-end: 0;
-  padding-inline-start: 40px;
 }
 </style>

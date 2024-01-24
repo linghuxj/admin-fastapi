@@ -1,4 +1,4 @@
-import {
+import type {
   InternalAxiosRequestConfig,
   AxiosResponse,
   AxiosRequestConfig,
@@ -20,23 +20,10 @@ interface RequestConfig<T = AxiosResponse> extends AxiosRequestConfig {
   interceptors?: RequestInterceptors<T>
 }
 
-interface AxiosConfig<T = AxiosResponse> {
-  baseURL: {
-    dev: string
-    pro: string
-  }
-  code: number
-  unauthorized_code: number
-  defaultHeaders: AxiosHeaders
-  timeout: number
-  interceptors?: RequestInterceptors<T>
-}
-
 export {
   AxiosResponse,
   RequestInterceptors,
   RequestConfig,
-  AxiosConfig,
   AxiosInstance,
   InternalAxiosRequestConfig,
   AxiosRequestHeaders,

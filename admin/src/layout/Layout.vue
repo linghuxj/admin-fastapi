@@ -2,7 +2,7 @@
 import { computed, defineComponent, unref } from 'vue'
 import { useAppStore } from '@/store/modules/app'
 import { Backtop } from '@/components/Backtop'
-// import { Setting } from '@/components/Setting'
+import { Setting } from '@/components/Setting'
 import { useRenderLayout } from './components/useRenderLayout'
 import { useDesign } from '@/hooks/web/useDesign'
 
@@ -59,7 +59,7 @@ export default defineComponent({
 
         <Backtop></Backtop>
 
-        {/* <Setting></Setting> */}
+        <Setting></Setting>
       </section>
     )
   }
@@ -71,8 +71,14 @@ export default defineComponent({
 
 .@{prefix-cls} {
   background-color: var(--app-content-bg-color);
-  :deep(.@{elNamespace}-scrollbar__view) {
-    height: 100% !important;
+  .@{prefix-cls}-content-scrollbar {
+    & > :deep(.el-scrollbar__wrap) {
+      & > .@{elNamespace}-scrollbar__view {
+        display: flex;
+        height: 100% !important;
+        flex-direction: column;
+      }
+    }
   }
 }
 </style>

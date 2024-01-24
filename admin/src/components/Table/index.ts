@@ -15,7 +15,6 @@ export interface TableExpose {
   setColumn: (columnProps: TableSetProps[]) => void
   addColumn: (column: TableColumn, index?: number) => void
   delColumn: (field: string) => void
-  getColumn: () => TableColumn[]
   elTableRef: ComponentRef<typeof ElTable>
 }
 

@@ -1,3 +1,3 @@
-from s_task import *
-from s_settings import *
-from s_dict import *
+from .s_task import *
+from .s_settings import *
+from .s_dict import *

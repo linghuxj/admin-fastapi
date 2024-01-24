@@ -3,10 +3,10 @@
 from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from utils.response import SuccessResponse
-from . import crud
-from apps.admin.auth.utils.current import AllUserAuth
-from apps.admin.auth.utils.validation.auth import Auth
-from .params import LoginParams, OperationParams, SMSParams
+from apps.services.record import crud
+from apps.services.auth.utils.current import AllUserAuth
+from apps.services.auth.utils.validation.auth import Auth
+from apps.services.record.params import LoginParams, OperationParams, SMSParams
 from core.database import mongo_getter
 
 app = APIRouter()

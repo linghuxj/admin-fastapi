@@ -39,7 +39,8 @@ export const useLockStore = defineStore('lock', {
         return false
       }
     }
-  }
+  },
+  persist: true
 })
 
 export const useLockStoreWithOut = () => {

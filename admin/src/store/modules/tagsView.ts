@@ -2,14 +2,9 @@ import router from '@/router'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { getRawRoute } from '@/utils/routerHelper'
 import { defineStore } from 'pinia'
-import { store } from '@/store'
+import { store } from '../index'
 import { findIndex } from '@/utils'
-import { useAppStoreWithOut } from '@/store/modules/app'
-import { useStorage } from '@/hooks/web/useStorage'
-
-const appStore = useAppStoreWithOut()
-
-const { getStorage } = useStorage()
+import { useUserStoreWithOut } from './user'
 
 export interface TagsViewState {
   visitedViews: RouteLocationNormalizedLoaded[]
@@ -95,7 +90,10 @@ export const useTagsViewStore = defineStore('tagsView', {
     },
     // 删除所有tag
     delAllVisitedViews() {
-      this.visitedViews = getStorage(appStore.getUserInfo)
+      const userStore = useUserStoreWithOut()
+
+      // const affixTags = this.visitedViews.filter((tag) => tag.meta.affix)
+      this.visitedViews = userStore.getUserInfo
         ? this.visitedViews.filter((tag) => tag?.meta?.affix)
         : []
     },
@@ -156,7 +154,8 @@ export const useTagsViewStore = defineStore('tagsView', {
         }
       }
     }
-  }
+  },
+  persist: false
 })
 
 export const useTagsViewStoreWithOut = () => {

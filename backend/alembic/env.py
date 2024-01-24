@@ -34,9 +34,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 
 # 导入项目中的基本映射类，与 需要迁移的 ORM 模型
-from apps.admin.auth.models import *
-from apps.admin.system.models import *
-from apps.admin.record.models import *
+from apps.services.auth.models import *
+from apps.services.system.models import *
+from apps.services.record.models import *
+from apps.services.help.models import *
+from apps.services.resource.models import *
 
 # 修改配置中的参数
 target_metadata = Base.metadata

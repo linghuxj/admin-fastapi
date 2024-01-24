@@ -28,7 +28,7 @@ export const setTextPlaceholder = (schema: FormSchema): PlaceholderModel => {
   ]
   if (textMap.includes(schema?.component as ComponentNameEnum)) {
     return {
-      placeholder: `请输入${schema.label}`
+      placeholder: t('common.inputText')
     }
   }
   if (selectMap.includes(schema?.component as ComponentNameEnum)) {
@@ -47,7 +47,7 @@ export const setTextPlaceholder = (schema: FormSchema): PlaceholderModel => {
       }
     } else {
       return {
-        placeholder: `请选择${schema.label}`
+        placeholder: t('common.selectText')
       }
     }
   }

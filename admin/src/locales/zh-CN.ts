@@ -44,14 +44,12 @@ export default {
     refresh: '刷新',
     fullscreen: '全屏',
     size: '尺寸',
-    density: '密度',
     columnSetting: '列设置',
     lengthRange: '长度在 {min} 到 {max} 个字符',
     notSpace: '不能包含空格',
     notSpecialCharacters: '不能包含特殊字符',
     isEqual: '两次输入不一致',
-    selectAll: '全选',
-    SerialNumberColumn: '序号列'
+    setting: '设置'
   },
   lock: {
     lockScreen: '锁定屏幕',
@@ -84,7 +82,7 @@ export default {
     sizeIcon: '尺寸图标',
     localeIcon: '多语言图标',
     tagsView: '标签页',
-    logo: '标志',
+    logo: 'Logo',
     greyMode: '灰色模式',
     fixedHeader: '固定头部',
     headerTheme: '头部主题',
@@ -108,29 +106,20 @@ export default {
   },
   login: {
     welcome: '欢迎使用本系统',
-    message: '通用型后台管理系统',
+    message: '开箱即用的中后台管理系统',
     username: '用户名',
-    telephone: '手机号',
     password: '密码',
     register: '注册',
     checkPassword: '确认密码',
     login: '登录',
-    passwordLogin: '密码登录',
-    smsLogin: '短信验证码登录',
     otherLogin: '其它登录方式',
     remember: '记住我',
     hasUser: '已有账号？去登录',
     forgetPassword: '忘记密码',
     usernamePlaceholder: '请输入用户名',
-    telephonePlaceholder: '请输入手机号',
     passwordPlaceholder: '请输入密码',
     code: '验证码',
-    getCode: '获取验证码',
-    codePlaceholder: '请输入验证码',
-    SMSCode: '短信验证码',
-    getSMSCode: '获取短信验证码',
-    SMSCodePlaceholder: '请输入短信验证码',
-    SMSCodeRetry: 'S后重新'
+    codePlaceholder: '请输入验证码'
   },
   router: {
     login: '登录',
@@ -185,7 +174,13 @@ export default {
     function: '功能',
     multipleTabs: '多开标签页',
     details: '详情页',
-    iconPicker: '图标选择器'
+    iconPicker: '图标选择器',
+    request: '请求',
+    waterfall: '瀑布流',
+    imageCropping: '图片裁剪',
+    videoPlayer: '视频播放器',
+    tableVideoPreview: '表格视频预览',
+    cardTable: '卡片表格'
   },
   permission: {
     hasPermission: '请设置操作权限值'
@@ -328,7 +323,8 @@ export default {
     customContent: '自定义内容',
     lazyLoad: '懒加载',
     upload: '上传',
-    userAvatar: '用户头像'
+    userAvatar: '用户头像',
+    iconPicker: '图标选择器'
   },
   guideDemo: {
     guide: '引导页',
@@ -448,14 +444,15 @@ export default {
     changeTitle: '修改标题',
     header: '头部',
     selectAllNone: '全选/全不选',
-    selectAll: '全选',
     delOrAddAction: '删除/添加操作列',
     showOrHiddenStripe: '显示/隐藏斑马纹',
     showOrHiddenBorder: '显示/隐藏边框',
     fixedHeaderOrAuto: '固定头部/自动',
     getSelections: '获取多选数据',
     preview: '封面',
-    showOrHiddenSortable: '显示/隐藏排序'
+    showOrHiddenSortable: '显示/隐藏排序',
+    videoPreview: '视频预览',
+    cardTable: '卡片表格'
   },
   richText: {
     richText: '富文本',
@@ -531,7 +528,7 @@ export default {
   menu: {
     menuName: '菜单名称',
     icon: '图标',
-    permission: '权限标识',
+    permission: '按钮权限',
     component: '组件',
     path: '路径',
     status: '状态',
