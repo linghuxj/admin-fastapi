@@ -1,9 +1,15 @@
 import { AxiosResponse, InternalAxiosRequestConfig } from './types'
 import { ElMessage } from 'element-plus'
 import qs from 'qs'
-import { SUCCESS_CODE, TRANSFORM_REQUEST_DATA } from '@/constants'
-import { useUserStoreWithOut } from '@/store/modules/user'
+import { SUCCESS_CODE, TRANSFORM_REQUEST_DATA, UNATHORIZED_CODE } from '@/constants'
 import { objToFormData } from '@/utils'
+import { useAppStore } from '@/store/modules/app'
+import { useStorage } from '@/hooks/web/useStorage'
+import request from '@/axios'
+import { AxiosError } from 'axios'
+import { useUserStore } from '@/store/modules/user'
+
+const { getStorage, setStorage } = useStorage()
 
 const defaultRequestInterceptors = (config: InternalAxiosRequestConfig) => {
   if (
@@ -39,14 +45,83 @@ const defaultResponseInterceptors = (response: AxiosResponse) => {
     // 如果是文件流，直接过
     return response
   } else if (response.data.code === SUCCESS_CODE) {
-    return response.data
-  } else {
-    ElMessage.error(response?.data?.message)
-    if (response?.data?.code === 401) {
-      const userStore = useUserStoreWithOut()
-      userStore.logout()
+    const refresh = response.headers['if-refresh']
+    if (refresh === '1') {
+      refreshToken().then((res) => {
+        const appStore = useAppStore()
+        setStorage(appStore.getToken, `${res.data.token_type} ${res.data.access_token}`)
+        setStorage(appStore.getRefreshToken, res.data.refresh_token)
+      })
     }
+    return response.data
+  } else if (response.data.code === UNATHORIZED_CODE) {
+    // 因token无效，token过期导致
+    refreshToken().then((res) => {
+      const appStore = useAppStore()
+      setStorage(appStore.getToken, `${res.data.token_type} ${res.data.access_token}`)
+      setStorage(appStore.getRefreshToken, res.data.refresh_token)
+      ElMessage.error('操作失败，请重试')
+    })
+  } else {
+    ElMessage.error(response.data.message)
   }
 }
 
-export { defaultResponseInterceptors, defaultRequestInterceptors }
+const defaultResponseInterceptorsError = (error: AxiosError) => {
+  console.log('err： ' + error) // for debug
+  let message = error.message
+  const userStore = useUserStore()
+  const status = error.response?.status
+  switch (status) {
+    case 400:
+      message = '请求错误'
+      break
+    case 401:
+      // token过期
+      userStore.logout()
+      message = '登录过期，请重新登录'
+      break
+    case 403:
+      // token过期
+      userStore.logout()
+      message = '无权限访问，请联系管理员'
+      break
+    case 404:
+      message = `请求地址出错: ${error.response?.config.url}`
+      break
+    case 408:
+      message = '请求超时'
+      break
+    case 500:
+      message = '服务器内部错误'
+      break
+    case 501:
+      message = '服务未实现'
+      break
+    case 502:
+      message = '网关错误'
+      break
+    case 503:
+      message = '服务不可用'
+      break
+    case 504:
+      message = '网关超时'
+      break
+    case 505:
+      message = 'HTTP版本不受支持'
+      break
+    default:
+      break
+  }
+  ElMessage.error(message)
+  return Promise.reject(error)
+}
+
+// 请求刷新Token
+const refreshToken = (): Promise<IResponse> => {
+  const appStore = useAppStore()
+  const data = getStorage(appStore.getRefreshToken)
+  return request.post({ url: '/auth/token/refresh', data })
+}
+
+export { defaultResponseInterceptors, defaultRequestInterceptors, defaultResponseInterceptorsError }

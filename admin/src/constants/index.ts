@@ -4,6 +4,11 @@
 export const SUCCESS_CODE = 0
 
 /**
+ * 请求TOKEN失效状态码
+ */
+export const UNATHORIZED_CODE = 401
+
+/**
  * 请求contentType
  */
 export const CONTENT_TYPE: AxiosContentType = 'application/json'

@@ -1,5 +1,9 @@
 import axios, { AxiosError } from 'axios'
-import { defaultRequestInterceptors, defaultResponseInterceptors } from './config'
+import {
+  defaultRequestInterceptors,
+  defaultResponseInterceptors,
+  defaultResponseInterceptorsError
+} from './config'
 
 import { AxiosInstance, InternalAxiosRequestConfig, RequestConfig, AxiosResponse } from './types'
 import { ElMessage } from 'element-plus'
@@ -37,7 +41,10 @@ axiosInstance.interceptors.response.use(
 )
 
 axiosInstance.interceptors.request.use(defaultRequestInterceptors)
-axiosInstance.interceptors.response.use(defaultResponseInterceptors)
+axiosInstance.interceptors.response.use(
+  defaultResponseInterceptors,
+  defaultResponseInterceptorsError
+)
 
 const service = {
   request: (config: RequestConfig) => {

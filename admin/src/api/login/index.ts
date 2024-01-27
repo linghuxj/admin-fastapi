@@ -1,12 +1,8 @@
 import request from '@/axios'
-import type { UserType } from './types'
+import type { UserLoginType, UserType } from './types'
 
 interface RoleParams {
   roleName: string
-}
-
-export const loginApi = (data: UserType): Promise<IResponse<UserType>> => {
-  return request.post({ url: '/mock/user/login', data })
 }
 
 export const loginOutApi = (): Promise<IResponse> => {
@@ -31,4 +27,16 @@ export const getAdminRoleApi = (
 
 export const getTestRoleApi = (params: RoleParams): Promise<IResponse<string[]>> => {
   return request.get({ url: '/mock/role/list2', params })
+}
+
+export const loginApi = (data: UserLoginType): Promise<IResponse> => {
+  return request.post({ url: '/mock/user/login', data })
+}
+
+export const getRoleMenusApi = (): Promise<IResponse<AppCustomRouteRecordRaw[]>> => {
+  return request.get({ url: '/admin/menu/list' })
+}
+
+export const postSMSCodeApi = (params: any): Promise<IResponse> => {
+  return request.post({ url: '/mock/system/sms/send', params })
 }

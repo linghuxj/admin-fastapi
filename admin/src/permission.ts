@@ -7,6 +7,10 @@ import { usePermissionStoreWithOut } from '@/store/modules/permission'
 import { usePageLoading } from '@/hooks/web/usePageLoading'
 import { NO_REDIRECT_WHITE_LIST } from '@/constants'
 import { useUserStoreWithOut } from '@/store/modules/user'
+import { useStorage } from '@/hooks/web/useStorage'
+import { getRoleMenusApi } from '@/api/login'
+
+const { getStorage, setStorage } = useStorage()
 
 const { start, done } = useNProgress()
 
@@ -18,26 +22,25 @@ router.beforeEach(async (to, from, next) => {
   const permissionStore = usePermissionStoreWithOut()
   const appStore = useAppStoreWithOut()
   const userStore = useUserStoreWithOut()
-  if (userStore.getUserInfo) {
+  if (getStorage(appStore.getToken)) {
     if (to.path === '/login') {
       next({ path: '/' })
+    } else if (to.path === '/reset/password') {
+      next()
     } else {
+      if (!userStore.getIsUser) {
+        await userStore.setUserInfo()
+      }
       if (permissionStore.getIsAddRouters) {
         next()
         return
       }
 
       // 开发者可根据实际情况进行修改
-      const roleRouters = userStore.getRoleRouters || []
-
-      // 是否使用动态路由
-      if (appStore.getDynamicRouter) {
-        appStore.serverDynamicRouter
-          ? await permissionStore.generateRoutes('server', roleRouters as AppCustomRouteRecordRaw[])
-          : await permissionStore.generateRoutes('frontEnd', roleRouters as string[])
-      } else {
-        await permissionStore.generateRoutes('static')
-      }
+      const res = await getRoleMenusApi()
+      const roleRouters = res.data || []
+      setStorage('roleRouters', roleRouters)
+      await permissionStore.generateRoutes(roleRouters as AppCustomRouteRecordRaw[])
 
       permissionStore.getAddRouters.forEach((route) => {
         router.addRoute(route as unknown as RouteRecordRaw) // 动态添加可访问路由表

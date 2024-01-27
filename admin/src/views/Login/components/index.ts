@@ -1,4 +1,5 @@
 import LoginForm from './LoginForm.vue'
+import TelephoneCodeForm from './TelephoneCodeForm.vue'
 import RegisterForm from './RegisterForm.vue'
 
-export { LoginForm, RegisterForm }
+export { LoginForm, TelephoneCodeForm, RegisterForm }

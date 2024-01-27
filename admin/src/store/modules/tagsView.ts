@@ -2,7 +2,7 @@ import router from '@/router'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { getRawRoute } from '@/utils/routerHelper'
 import { defineStore } from 'pinia'
-import { store } from '../index'
+import { store } from '@/store'
 import { findIndex } from '@/utils'
 import { useUserStoreWithOut } from './user'
 
@@ -93,7 +93,7 @@ export const useTagsViewStore = defineStore('tagsView', {
       const userStore = useUserStoreWithOut()
 
       // const affixTags = this.visitedViews.filter((tag) => tag.meta.affix)
-      this.visitedViews = userStore.getUserInfo
+      this.visitedViews = userStore.isUser
         ? this.visitedViews.filter((tag) => tag?.meta?.affix)
         : []
     },

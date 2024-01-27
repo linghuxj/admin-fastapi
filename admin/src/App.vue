@@ -3,7 +3,9 @@ import { computed } from 'vue'
 import { useAppStore } from '@/store/modules/app'
 import { ConfigGlobal } from '@/components/ConfigGlobal'
 import { useDesign } from '@/hooks/web/useDesign'
-import { ElNotification } from 'element-plus'
+import { useStorage } from '@/hooks/web/useStorage'
+import { getSystemBaseConfigApi } from '@/api/admin/system/settings'
+import { isDark } from '@/utils/is'
 
 const { getPrefixCls } = useDesign()
 
@@ -15,16 +17,41 @@ const currentSize = computed(() => appStore.getCurrentSize)
 
 const greyMode = computed(() => appStore.getGreyMode)
 
-appStore.initTheme()
+const { getStorage } = useStorage()
 
-ElNotification({
-  title: '提示',
-  type: 'warning',
-  duration: 0,
-  dangerouslyUseHTMLString: true,
-  message:
-    '<div><p><strong>遇事不决，请先查阅常见问题，说不定你能找到相关解答</strong></p><p><a href="https://element-plus-admin-doc.cn/guide/fqa.html" target="_blank">链接地址</a></p></div>'
-})
+const setDefaultTheme = () => {
+  if (getStorage('isDark') !== null) {
+    appStore.setIsDark(getStorage('isDark'))
+    return
+  } else {
+    appStore.initTheme()
+  }
+  const isDarkTheme = isDark()
+  appStore.setIsDark(isDarkTheme)
+}
+
+// 添加mate标签
+const addMeta = (name: string, content: string) => {
+  const meta = document.createElement('meta')
+  meta.content = content
+  meta.name = name
+  document.getElementsByTagName('head')[0].appendChild(meta)
+}
+
+// 获取并设置系统配置
+const setSystemConfig = async () => {
+  const res = await getSystemBaseConfigApi()
+  if (res) {
+    appStore.setTitle(res.data.web_title || import.meta.env.VITE_APP_TITLE)
+    appStore.setLogoImage(res.data.web_logo || '/media/system/logo.png')
+    appStore.setFooterContent(res.data.web_copyright || 'Copyright ©2021-present Smtro')
+    appStore.setIcpNumber(res.data.web_icp_number || '')
+    addMeta('description', res.data.web_desc || '通用型后台管理系统')
+  }
+}
+
+setDefaultTheme()
+setSystemConfig()
 </script>
 
 <template>

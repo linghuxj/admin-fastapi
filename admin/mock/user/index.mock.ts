@@ -3,21 +3,21 @@ import { SUCCESS_CODE } from '@/constants'
 const timeout = 1000
 
 const List: {
-  username: string
+  telephone: string
   password: string
   role: string
   roleId: string
   permissions: string | string[]
 }[] = [
   {
-    username: 'admin',
+    telephone: 'admin',
     password: 'admin',
     role: 'admin',
     roleId: '1',
     permissions: ['*.*.*']
   },
   {
-    username: 'test',
+    telephone: 'test',
     password: 'test',
     role: 'test',
     roleId: '2',
@@ -31,11 +31,10 @@ export default [
     url: '/mock/user/list',
     method: 'get',
     response: ({ query }) => {
-      const { username, pageIndex, pageSize } = query
+      const { telephone, pageIndex, pageSize } = query
 
       const mockList = List.filter((item) => {
-        if (username && item.username.indexOf(username) < 0) return false
-        return true
+        return !(telephone && item.telephone.indexOf(telephone) < 0)
       })
       const pageList = mockList.filter(
         (_, index) => index < pageSize * pageIndex && index >= pageSize * (pageIndex - 1)
@@ -59,11 +58,19 @@ export default [
       const data = body
       let hasUser = false
       for (const user of List) {
-        if (user.username === data.username && user.password === data.password) {
+        if (user.telephone === data.telephone && user.password === data.password) {
           hasUser = true
           return {
             code: SUCCESS_CODE,
-            data: user
+            data: {
+              access_token:
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMzMxMjM0MTIzNCIsImlzX3JlZnJlc2giOmZhbHNlLCJleHAiOjE3MDY0MDU2Mjh9.zV5cFoe5RaB3HHwhk0ufaSX-DJU4aaQbzn2aF1pVCMM',
+              refresh_token:
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMzMxMjM0MTIzNCIsImlzX3JlZnJlc2giOnRydWUsImV4cCI6MTcwNjQ5MjAyOH0.KFpPLwf6evHUprhg0qt0U6pSvpfo90k7vcSQuhp3ElQ',
+              token_type: 'bearer',
+              is_reset_password: true,
+              is_wx_server_openid: false
+            }
           }
         }
       }

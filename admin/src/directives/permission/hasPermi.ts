@@ -1,18 +1,31 @@
 import type { App, Directive, DirectiveBinding } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
-import router from '@/router'
+import { useUserStoreWithOut } from '@/store/modules/user'
+import { isArray } from '@/utils/is'
+import { intersection } from 'lodash-es'
 
 const { t } = useI18n()
 
+const userStore = useUserStoreWithOut()
+
+// 全部权限
+const all_permission = ['*.*.*']
+
 const hasPermission = (value: string): boolean => {
-  const permission = (router.currentRoute.value.meta.permission || []) as string[]
+  const permission = userStore.getPermissions
   if (!value) {
     throw new Error(t('permission.hasPermission'))
   }
-  if (permission.includes(value)) {
+
+  if (all_permission[0] === permission[0]) {
     return true
   }
-  return false
+
+  if (!isArray(value)) {
+    return permission?.includes(value as string)
+  }
+
+  return (intersection(value, permission) as string[]).length > 0
 }
 function hasPermi(el: Element, binding: DirectiveBinding) {
   const value = binding.value
