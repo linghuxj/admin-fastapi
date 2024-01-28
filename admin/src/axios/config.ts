@@ -12,6 +12,11 @@ import { useUserStore } from '@/store/modules/user'
 const { getStorage, setStorage } = useStorage()
 
 const defaultRequestInterceptors = (config: InternalAxiosRequestConfig) => {
+  const appStore = useAppStore()
+  const token = getStorage(appStore.getToken)
+  if (token !== '') {
+    ;(config.headers as any)['Authorization'] = token
+  }
   if (
     config.method === 'post' &&
     config.headers['Content-Type'] === 'application/x-www-form-urlencoded'

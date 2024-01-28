@@ -43,6 +43,7 @@ export const getImportTemplateApi = (): Promise<IResponse> => {
 export const postImportUserApi = (data: any): Promise<IResponse> => {
   return request.post({
     url: `/admin/auth/import/users`,
+    headersType: 'multipart/form-data',
     data
   })
 }

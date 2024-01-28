@@ -1,10 +1,3 @@
-export type AnalysisTotalTypes = {
-  users: number
-  messages: number
-  moneys: number
-  shoppings: number
-}
-
 export type UserAccessSource = {
   value: number
   name: string

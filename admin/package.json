@@ -1,8 +1,8 @@
 {
   "name": "common-admin",
   "version": "0.0.1",
-  "description": "一套基于vue3、element-plus、typesScript、vite4的后台集成方案。",
-  "author": "Archer <502431556@qq.com>",
+  "description": "后台管理系统。",
+  "author": "Linghuxj <linghuxj@gmail.com>",
   "private": false,
   "scripts": {
     "i": "pnpm install",
@@ -54,6 +54,7 @@
     "xgplayer": "^3.0.11"
   },
   "devDependencies": {
+    "@amap/amap-jsapi-loader": "1.0.1",
     "@commitlint/cli": "^18.4.4",
     "@commitlint/config-conventional": "^18.4.4",
     "@iconify/json": "^2.2.166",

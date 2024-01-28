@@ -1,14 +1,9 @@
-export type WorkplaceTotal = {
-  project: number
-  access: number
-  todo: number
-}
-
 export type Project = {
   name: string
   icon: string
   message: string
   personal: string
+  link: string
   time: Date | number | string
 }
 
@@ -27,4 +22,9 @@ export type RadarData = {
   team: number
   max: number
   name: string
+}
+
+export type Shortcuts = {
+  name: string
+  link: string
 }

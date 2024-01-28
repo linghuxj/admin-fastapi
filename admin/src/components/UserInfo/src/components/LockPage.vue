@@ -1,22 +1,12 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { ElInput } from 'element-plus'
-import { resetRouter } from '@/router'
-import { useRouter } from 'vue-router'
-import { useStorage } from '@/hooks/web/useStorage'
 import { useLockStore } from '@/store/modules/lock'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useNow } from '@/hooks/web/useNow'
 import { useDesign } from '@/hooks/web/useDesign'
 import { Icon } from '@/components/Icon'
-import { loginOutApi } from '@/api/login'
-import { useTagsViewStore } from '@/store/modules/tagsView'
-
-const tagsViewStore = useTagsViewStore()
-
-const { clear } = useStorage()
-
-const { replace } = useRouter()
+import { useUserStoreWithOut } from '@/store/modules/user'
 
 const password = ref('')
 const loading = ref(false)
@@ -27,6 +17,8 @@ const { getPrefixCls } = useDesign()
 const prefixCls = getPrefixCls('lock-page')
 
 const lockStore = useLockStore()
+
+const userStore = useUserStoreWithOut()
 
 const { hour, month, minute, meridiem, year, day, week } = useNow(true)
 
@@ -49,14 +41,7 @@ async function unLock() {
 
 // 返回登录
 async function goLogin() {
-  const res = await loginOutApi().catch(() => {})
-  if (res) {
-    clear()
-    tagsViewStore.delAllViews()
-    resetRouter() // 重置静态路由表
-    lockStore.resetLockInfo()
-    replace('/login')
-  }
+  userStore.logout()
 }
 
 function handleShowForm(show = false) {

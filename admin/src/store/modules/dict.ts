@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { getDictTypeDetailsApi } from '@/api/admin/system/dicts'
 import { store } from '@/store'
+import { getDictTypeDetailsApi } from '@/api/admin/system/dicts'
 
 export interface DictState {
   dictObj: Recordable

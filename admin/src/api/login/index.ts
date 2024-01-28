@@ -1,42 +1,14 @@
 import request from '@/axios'
-import type { UserLoginType, UserType } from './types'
-
-interface RoleParams {
-  roleName: string
-}
-
-export const loginOutApi = (): Promise<IResponse> => {
-  return request.get({ url: '/mock/user/loginOut' })
-}
-
-export const getUserListApi = ({ params }: AxiosConfig) => {
-  return request.get<{
-    code: string
-    data: {
-      list: UserType[]
-      total: number
-    }
-  }>({ url: '/mock/user/list', params })
-}
-
-export const getAdminRoleApi = (
-  params: RoleParams
-): Promise<IResponse<AppCustomRouteRecordRaw[]>> => {
-  return request.get({ url: '/mock/role/list', params })
-}
-
-export const getTestRoleApi = (params: RoleParams): Promise<IResponse<string[]>> => {
-  return request.get({ url: '/mock/role/list2', params })
-}
+import type { UserLoginType } from './types'
 
 export const loginApi = (data: UserLoginType): Promise<IResponse> => {
-  return request.post({ url: '/mock/user/login', data })
+  return request.post({ url: '/auth/login', data })
 }
 
 export const getRoleMenusApi = (): Promise<IResponse<AppCustomRouteRecordRaw[]>> => {
-  return request.get({ url: '/admin/menu/list' })
+  return request.get({ url: '/auth/getMenuList' })
 }
 
 export const postSMSCodeApi = (params: any): Promise<IResponse> => {
-  return request.post({ url: '/mock/system/sms/send', params })
+  return request.post({ url: '/admin/system/sms/send', params })
 }
